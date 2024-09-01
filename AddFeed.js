@@ -1,3 +1,13 @@
+// Initialize the array with a default feed URL
+var userFeedURLs = ["https://bajarkochirfar.com/feed"];
+
+// Display default URLs in the list on page load
+document.addEventListener('DOMContentLoaded', function () {
+    userFeedURLs.forEach(url => {
+        displayURLInList(url);
+    });
+});
+
 document.getElementById("confirmButton").addEventListener('click', handleConfirm);
 document.getElementById("gotoFeedButton").addEventListener('click', handleGotoFeed);
 
