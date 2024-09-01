@@ -37,3 +37,9 @@ hr {
 .container#item p {
     font-size: 14px; /* Font size for the content description */
 }
+
+/* Center the visible button */
+button.btn-primary {
+    margin: 10px auto;
+    display: block;
+}
