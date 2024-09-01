@@ -35,36 +35,50 @@ const feedURLs = {
     ]
 };
 
-// Determine the category from the URL hash
-let category = window.location.hash.substring(1) || 'construction-news'; // Default to 'construction-news'
+// Function to load feeds and manage visibility
+function loadFeeds(category) {
+    // Clear the content area
+    let content = document.getElementById('content');
+    content.innerHTML = '';
 
-let userFeedURLs = feedURLs[category] || [];
-userFeedURLs.forEach(userUrl => {
-    $.ajax({
-        type: 'GET',
-        url: API + userUrl,
-        dataType: 'jsonp',
-        success: function (data) {
-            console.log(data);
+    // Hide buttons and show only the selected category's button
+    document.getElementById('btn-construction').style.display = 'none';
+    document.getElementById('btn-share').style.display = 'none';
+    document.getElementById('btn-nepali').style.display = 'none';
+    
+    if (category === 'construction-news') {
+        document.getElementById('btn-construction').style.display = 'block';
+    } else if (category === 'share-market') {
+        document.getElementById('btn-share').style.display = 'block';
+    } else if (category === 'nepali-news') {
+        document.getElementById('btn-nepali').style.display = 'block';
+    }
 
-            // Sort items by published date in descending order (newest first)
-            data.items.sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
-
-            data.items.forEach(item => {
-                var content = document.getElementById('content');
-
-                // Create a new item container
-                var newItem = "";
-                newItem += "<div class=\"container\" id=\"item\"><a href=\"" + item.link + "\"><h1>" + item.title + "</h1></a>";
-                
-                // Remove 'from Google Alert -...' if it exists
-                let description = item.description.replace(/from Google Alert -.*?<br>/i, '');
-                
-                newItem += "<h4>Published Date: " + item.pubDate + "</h4>";
-                newItem += description + "<hr></div>";
-
-                content.insertAdjacentHTML('beforeend', newItem);
-            });
-        }
+    // Load the selected category's feed
+    let userFeedURLs = feedURLs[category] || [];
+    userFeedURLs.forEach(userUrl => {
+        $.ajax({
+            type: 'GET',
+            url: API + userUrl,
+            dataType: 'jsonp',
+            success: function (data) {
+                // Sort and display the feed items
+                data.items.sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
+                data.items.forEach(item => {
+                    var newItem = "";
+                    newItem += "<div class=\"container\" id=\"item\"><a href=\"" + item.link + "\"><h1>" + item.title + "</h1></a>";
+                    let description = item.description.replace(/from Google Alert -.*?<br>/i, '');
+                    newItem += "<h4>Published Date: " + item.pubDate + "</h4>";
+                    newItem += description + "<hr></div>";
+                    content.insertAdjacentHTML('beforeend', newItem);
+                });
+            }
+        });
     });
+}
+
+// Load the default category when the page loads
+document.addEventListener("DOMContentLoaded", function() {
+    let category = window.location.hash.substring(1) || 'construction-news';
+    loadFeeds(category);
 });
