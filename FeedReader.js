@@ -46,6 +46,10 @@ userFeedURLs.forEach(userUrl => {
         dataType: 'jsonp',
         success: function (data) {
             console.log(data);
+
+            // Sort items by published date in descending order (newest first)
+            data.items.sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
+
             data.items.forEach(item => {
                 var content = document.getElementById('content');
 
