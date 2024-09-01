@@ -1,14 +1,39 @@
+/* General Styles */
+body {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Headings for Topics */
+h1.display-2, h1.display-3, h1.display-5 {
+    font-size: 24px; /* Adjust this size as needed */
+}
+
+/* Feed Item Container */
+.container#item {
+    border: 1px solid #ddd;
+    margin-bottom: 10px; /* Space between items */
+    padding: 10px; /* Padding inside the item */
+}
+
+/* Remove default styles from hr */
 hr {
     font-size: 18px;
+    border: none; /* Remove the default border */
+    border-top: 1px solid #ddd; /* Custom border */
+    margin: 10px 0; /* Margin around the hr element */
 }
 
-#item {
-    border: 1px solid #ddd;
-    margin-bottom: 10px;
-    padding: 10px;
-    background-color: #f9f9f9;
+/* Headings Inside Feed Items */
+.container#item h1 {
+    font-size: 18px; /* Font size for item titles */
 }
 
-.container {
-    margin-top: 20px;
+/* Published Date and Description */
+.container#item h4 {
+    font-size: 14px; /* Font size for metadata */
+    color: #555; /* Darker color for metadata */
+}
+
+.container#item p {
+    font-size: 14px; /* Font size for the content description */
 }
