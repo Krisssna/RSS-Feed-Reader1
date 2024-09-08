@@ -37,41 +37,56 @@ const feedURLs = {
 
 // Determine the category from the URL hash
 let category = window.location.hash.substring(1) || 'construction-news'; // Default to 'construction-news'
-
 let userFeedURLs = feedURLs[category] || [];
-userFeedURLs.forEach(userUrl => {
-    $.ajax({
-        type: 'GET',
-        url: API + userUrl,
-        dataType: 'jsonp',
-        success: function (data) {
-            console.log(data);
 
-            // Sort items by published date in descending order (newest first)
-            data.items.sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
+// Clear previous content
+$("#content").empty();
 
-            // Clear previous content
-            var content = document.getElementById('content');
-            content.innerHTML = '<div class="card-deck"></div>'; // Create a card-deck container
-
-            data.items.forEach(item => {
-                var cardDeck = document.querySelector('.card-deck');
-
-                // Create a new item container
-                var newItem = "";
-                newItem += "<div class=\"card\">";
-                newItem += "<div class=\"card-body\">";
-                newItem += "<h5 class=\"card-title\">" + item.title + "</h5>";
+function fetchFeeds() {
+    showLoading();
+    userFeedURLs.forEach(userUrl => {
+        $.ajax({
+            type: 'GET',
+            url: API + userUrl,
+            dataType: 'jsonp',
+            success: function (data) {
+                hideLoading();
                 
-                // Remove 'from Google Alert -...' if it exists
-                let description = item.description.replace(/from Google Alert -.*?<br>/i, '');
+                // Sort items by published date in descending order (newest first)
+                data.items.sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
                 
-                newItem += "<h6 class=\"card-subtitle mb-2 text-muted\">Published Date: " + item.pubDate + "</h6>";
-                newItem += "<p class=\"card-text\">" + description + "</p>";
-                newItem += "</div></div>";
-
-                cardDeck.insertAdjacentHTML('beforeend', newItem);
-            });
-        }
+                data.items.forEach(item => {
+                    var content = $('#content');
+                    
+                    // Create a new item container
+                    var newItem = "<div class=\"card\"><div class=\"card-body\">";
+                    newItem += "<h5 class=\"card-title\"><a href=\"" + item.link + "\" target=\"_blank\">" + item.title + "</a></h5>";
+                    
+                    // Remove 'from Google Alert -...' if it exists
+                    let description = item.description.replace(/from Google Alert -.*?<br>/i, '');
+                    
+                    newItem += "<h6 class=\"card-subtitle mb-2 text-muted\">Published Date: " + item.pubDate + "</h6>";
+                    newItem += "<p class=\"card-text\">" + description + "</p>";
+                    newItem += "<p class=\"card-text\"><small class=\"text-muted\">Source: " + item.source + "</small></p>";
+                    newItem += "</div></div>";
+                    
+                    content.append(newItem);
+                });
+            },
+            error: function () {
+                hideLoading();
+                // Handle errors here
+            }
+        });
     });
-});
+}
+
+// Initial fetch
+fetchFeeds();
+
+// Bind click events to buttons to fetch feeds
+function loadFeeds(category) {
+    window.location.hash = category;
+    userFeedURLs = feedURLs[category] || [];
+    fetchFeeds();
+}
