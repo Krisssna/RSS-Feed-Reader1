@@ -37,8 +37,13 @@ const feedURLs = {
 
 // Determine the category from the URL hash
 let category = window.location.hash.substring(1) || 'construction-news'; // Default to 'construction-news'
-
 let userFeedURLs = feedURLs[category] || [];
+
+// error handling if no feeds exist for the category
+if (userFeedURLs.length === 0) {
+    alert('No feeds for this category');
+}
+
 userFeedURLs.forEach(userUrl => {
     $.ajax({
         type: 'GET',
@@ -74,4 +79,17 @@ userFeedURLs.forEach(userUrl => {
             });
         }
     });
+});
+// load all feeds for the category
+userFeedURLs.forEach(feedUrl => {
+    fetchNews(feedUrl);
+});
+
+// Add infinite scrolling
+$(window).scroll(function() {
+    if ($(window).scrollTop() + $(window).height() == $(document).height()) {
+        userFeedURLs.forEach(feedUrl => {
+            fetchNews(feedUrl);
+        });
+    }
 });
