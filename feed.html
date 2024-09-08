@@ -10,18 +10,20 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
-    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-    <script src="FeedReader.js"></script>
+    <script src="feedreader.js"></script>
     <link href="custom.css" rel="stylesheet">
 </head>
 
 <body class="bg-dark">
-    <div id="content" class="container bg-white" style="text-align: left;">
-        <!-- Example category buttons -->
+    <div class="container">
+        <h1 class="display-2 text-white text-center">RSS Feed Reader</h1>
         <div class="text-center">
-            <button class="btn btn-primary" onclick="loadFeeds('Construction News')">Construction News</button>
-            <button class="btn btn-primary" onclick="loadFeeds('Share Market')">Share Market</button>
-            <button class="btn btn-primary" onclick="loadFeeds('Nepali News')">Nepali News</button>
+            <button class="btn btn-primary btn-category" data-category="construction-news">Construction News</button>
+            <button class="btn btn-primary btn-category" data-category="share-market">Share Market</button>
+            <button class="btn btn-primary btn-category" data-category="nepali-news">Nepali News</button>
+        </div>
+        <div id="content" class="row bg-white">
+            <!-- News items will be inserted here -->
         </div>
     </div>
 </body>
