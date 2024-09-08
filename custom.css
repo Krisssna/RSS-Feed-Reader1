@@ -8,69 +8,65 @@ h1.display-2, h1.display-3, h1.display-5 {
     font-size: 24px; /* Adjust this size as needed */
 }
 
-/* Card Styles */
+/* Feed Item Container */
 .card {
     border: 1px solid #ddd;
-    margin-bottom: 10px; /* Space between cards */
-    padding: 10px; /* Padding inside the card */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 10px; /* Space between items */
+    padding: 10px; /* Padding inside the item */
+    border-radius: 5px; /* Rounded corners */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
 }
 
+/* Card Content */
 .card-body {
-    padding: 10px;
-}
-
-.card-title {
-    font-size: 18px; /* Font size for card titles */
-}
-
-.card-subtitle {
-    font-size: 14px; /* Font size for card subtitles */
-    color: #555; /* Darker color for metadata */
-}
-
-.card-text {
-    font-size: 14px; /* Font size for card text */
-}
-
-/* Responsive Layout */
-.card-deck {
     display: flex;
-    flex-wrap: wrap;
-    gap: 15px;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
-.card-deck .card {
-    flex: 1 1 calc(25% - 15px); /* 4 cards per row with a gap */
+/* Remove thumbnails */
+.card img {
+    display: none; /* Remove image display */
 }
 
-@media (max-width: 992px) {
-    .card-deck .card {
-        flex: 1 1 calc(33.333% - 15px); /* 3 cards per row for medium screens */
+/* Card Titles */
+.card-title {
+    font-size: 16px; /* Font size for titles */
+    margin-bottom: 10px; /* Space below the title */
+}
+
+/* Card Text */
+.card-text {
+    font-size: 14px; /* Font size for the content description */
+}
+
+/* Source and Date */
+.card-subtitle {
+    font-size: 12px; /* Font size for subtitle */
+    color: #555; /* Darker color for subtitle */
+}
+
+/* Responsive Design */
+@media (min-width: 576px) {
+    .card {
+        flex: 1 0 50%; /* Two cards per row on small devices */
     }
 }
 
-@media (max-width: 768px) {
-    .card-deck .card {
-        flex: 1 1 calc(50% - 15px); /* 2 cards per row for small screens */
+@media (min-width: 768px) {
+    .card {
+        flex: 1 0 33.333%; /* Three cards per row on medium devices */
+    }
+}
+
+@media (min-width: 992px) {
+    .card {
+        flex: 1 0 25%; /* Four cards per row on large devices */
     }
 }
 
 @media (max-width: 576px) {
-    .card-deck .card {
-        flex: 1 1 100%; /* 1 card per row for very small screens */
+    .card {
+        flex: 1 0 100%; /* One card per row on extra small devices */
     }
-}
-
-/* Remove default styles from hr */
-hr {
-    font-size: 18px;
-    border: none; /* Remove the default border */
-    border-top: 1px solid #ddd; /* Custom border */
-    margin: 10px 0; /* Margin around the hr element */
-}
-
-/* Container Styles */
-.container {
-    padding: 20px;
 }
