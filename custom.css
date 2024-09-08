@@ -41,12 +41,18 @@ h1.display-2, h1.display-3, h1.display-5 {
 }
 
 .card-deck .card {
-    flex: 1 1 calc(33.333% - 15px); /* 3 cards per row with a gap */
+    flex: 1 1 calc(25% - 15px); /* 4 cards per row with a gap */
+}
+
+@media (max-width: 992px) {
+    .card-deck .card {
+        flex: 1 1 calc(33.333% - 15px); /* 3 cards per row for medium screens */
+    }
 }
 
 @media (max-width: 768px) {
     .card-deck .card {
-        flex: 1 1 calc(50% - 15px); /* 2 cards per row for smaller screens */
+        flex: 1 1 calc(50% - 15px); /* 2 cards per row for small screens */
     }
 }
 
