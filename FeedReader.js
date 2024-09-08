@@ -1,6 +1,5 @@
-let API = "https://api.rss2json.com/v1/api.json?rss_url=";
+const API = "https://api.rss2json.com/v1/api.json?rss_url=";
 
-// Define a mapping of RSS feed URLs for each category
 const feedURLs = {
     'construction-news': [
         'https://www.google.com/alerts/feeds/06313983183609550648/863422411556577025',
@@ -35,7 +34,6 @@ const feedURLs = {
     ]
 };
 
-// Function to load feeds based on category
 function loadFeeds(category) {
     let userFeedURLs = feedURLs[category] || [];
     $('#content').empty(); // Clear previous content
@@ -55,15 +53,14 @@ function loadFeeds(category) {
                     var content = $('#content');
 
                     // Create a new item container
-                    var newItem = "";
-                    newItem += "<div class=\"col-md-4 mb-3\"><div class=\"card\">";
-                    newItem += "<img class=\"card-img-top\" src=\"default-thumbnail.jpg\" alt=\"Default Thumbnail\">";
+                    var newItem = "<div class=\"col-md-4 mb-3\"><div class=\"card\">";
+                    newItem += "<div class=\"card-img-top placeholder\"></div>";
                     newItem += "<div class=\"card-body\">";
                     newItem += "<h5 class=\"card-title\"><a href=\"" + item.link + "\" target=\"_blank\">" + item.title + "</a></h5>";
-                    
+
                     // Limit description to 5 lines
                     let description = item.description.replace(/<br\s*\/?>/gi, ' ').split(' ').slice(0, 50).join(' ') + '...';
-                    
+
                     newItem += "<p class=\"card-text\">" + description + "</p>";
                     newItem += "</div></div></div>";
 
@@ -77,8 +74,8 @@ function loadFeeds(category) {
     });
 }
 
-// Event handler for category buttons
 $(document).on('click', '.btn-category', function () {
     let category = $(this).data('category');
+    $('#content').empty(); // Clear previous content
     loadFeeds(category);
 });
