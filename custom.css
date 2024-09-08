@@ -9,38 +9,10 @@ h1.display-2, h1.display-3, h1.display-5 {
 }
 
 /* Feed Item Container */
-#content {
-    margin-top: 20px;
-}
-
-/* Card Styles */
 .card {
     border: 1px solid #ddd;
-    border-radius: 4px;
-    overflow: hidden;
-}
-
-/* Card Image Placeholder */
-.card-img-top.placeholder {
-    height: 200px; /* Adjust this as needed */
-    background-color: #f0f0f0; /* Light grey background color for placeholder */
-}
-
-/* Card Body */
-.card-body {
-    padding: 15px;
-}
-
-/* Card Title */
-.card-title a {
-    text-decoration: none;
-    color: #333;
-}
-
-/* Card Text */
-.card-text {
-    font-size: 14px;
-    color: #555;
+    margin-bottom: 10px; /* Space between items */
+    padding: 10px; /* Padding inside the item */
 }
 
 /* Remove default styles from hr */
@@ -51,9 +23,23 @@ hr {
     margin: 10px 0; /* Margin around the hr element */
 }
 
-/* Responsive Layout */
-@media (max-width: 768px) {
-    .card-img-top {
-        height: 150px;
-    }
+/* Headings Inside Feed Items */
+.card-title {
+    font-size: 18px; /* Font size for item titles */
+}
+
+/* Published Date and Description */
+.card-text {
+    font-size: 14px; /* Font size for the content description */
+}
+
+/* Blank Thumbnail Placeholder */
+.card-img-top {
+    background-color: #e0e0e0; /* Light gray background for blank thumbnail */
+    height: 150px; /* Adjust as needed */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #999;
+    font-size: 14px;
 }
