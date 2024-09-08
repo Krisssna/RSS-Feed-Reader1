@@ -50,12 +50,17 @@ userFeedURLs.forEach(userUrl => {
             // Sort items by published date in descending order (newest first)
             data.items.sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
 
+            // Clear previous content
+            var content = document.getElementById('content');
+            content.innerHTML = '<div class="card-deck"></div>'; // Create a card-deck container
+
             data.items.forEach(item => {
-                var content = document.getElementById('content');
+                var cardDeck = document.querySelector('.card-deck');
 
                 // Create a new item container
                 var newItem = "";
-                newItem += "<div class=\"card\"><div class=\"card-body\">";
+                newItem += "<div class=\"card\">";
+                newItem += "<div class=\"card-body\">";
                 newItem += "<h5 class=\"card-title\">" + item.title + "</h5>";
                 
                 // Remove 'from Google Alert -...' if it exists
@@ -65,7 +70,7 @@ userFeedURLs.forEach(userUrl => {
                 newItem += "<p class=\"card-text\">" + description + "</p>";
                 newItem += "</div></div>";
 
-                content.insertAdjacentHTML('beforeend', newItem);
+                cardDeck.insertAdjacentHTML('beforeend', newItem);
             });
         }
     });
