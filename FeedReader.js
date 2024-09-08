@@ -61,7 +61,7 @@ userFeedURLs.forEach(userUrl => {
                 var newItem = "";
                 newItem += "<div class=\"card\">";
                 newItem += "<div class=\"card-body\">";
-                newItem += "<h5 class=\"card-title\">" + item.title + "</h5>";
+                newItem += "<h5 class=\"card-title\"><a href=\"" + item.link + "\" target=\"_blank\">" + item.title + "</a></h5>";
                 
                 // Remove 'from Google Alert -...' if it exists
                 let description = item.description.replace(/from Google Alert -.*?<br>/i, '');
