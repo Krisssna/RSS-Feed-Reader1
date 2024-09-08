@@ -1,5 +1,6 @@
 let API = "https://api.rss2json.com/v1/api.json?rss_url=";
 
+// Define a mapping of RSS feed URLs for each category
 const feedURLs = {
     'construction-news': [
         'https://www.google.com/alerts/feeds/06313983183609550648/863422411556577025',
@@ -34,68 +35,50 @@ const feedURLs = {
     ]
 };
 
-// Function to load feeds based on the category selected
+// Function to load feeds based on category
 function loadFeeds(category) {
-    let content = document.getElementById('content');
-    content.innerHTML = ''; // Clear previous content
-
-    // Check if valid category
-    if (!feedURLs[category]) {
-        console.error('No feeds found for this category');
-        return;
-    }
-
-    let userFeedURLs = feedURLs[category];
+    let userFeedURLs = feedURLs[category] || [];
+    $('#content').empty(); // Clear previous content
 
     userFeedURLs.forEach(userUrl => {
-        console.log('Fetching from URL:', userUrl);  // Debugging info
-        
         $.ajax({
             type: 'GET',
             url: API + userUrl,
-            dataType: 'jsonp',
+            dataType: 'json',
             success: function (data) {
-                console.log('Data received:', data);  // Debugging info
-                
-                if (!data.items || data.items.length === 0) {
-                    console.warn('No news items found in feed:', userUrl);
-                    return;
-                }
+                console.log(data);
+
+                // Sort items by published date in descending order (newest first)
+                data.items.sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
 
                 data.items.forEach(item => {
-                    let newItem = document.createElement('div');
-                    newItem.classList.add('news-item', 'col-lg-4', 'col-md-6', 'col-sm-12');
-                    
-                    let thumbnail = item.thumbnail || 'https://via.placeholder.com/150';  // Default blank image
-                    newItem.innerHTML = `
-                        <div class="news-box">
-                            <a href="${item.link}" target="_blank">
-                                <img src="${thumbnail}" alt="thumbnail" class="news-thumbnail">
-                                <h3>${item.title}</h3>
-                            </a>
-                            <p class="news-date">Published: ${new Date(item.pubDate).toLocaleDateString()}</p>
-                            <p class="news-description">${item.description.split(' ').slice(0, 30).join(' ')}...</p>
-                        </div>
-                    `;
+                    var content = $('#content');
 
-                    content.appendChild(newItem);
+                    // Create a new item container
+                    var newItem = "";
+                    newItem += "<div class=\"col-md-4 mb-3\"><div class=\"card\">";
+                    newItem += "<img class=\"card-img-top\" src=\"default-thumbnail.jpg\" alt=\"Default Thumbnail\">";
+                    newItem += "<div class=\"card-body\">";
+                    newItem += "<h5 class=\"card-title\"><a href=\"" + item.link + "\" target=\"_blank\">" + item.title + "</a></h5>";
+                    
+                    // Limit description to 5 lines
+                    let description = item.description.replace(/<br\s*\/?>/gi, ' ').split(' ').slice(0, 50).join(' ') + '...';
+                    
+                    newItem += "<p class=\"card-text\">" + description + "</p>";
+                    newItem += "</div></div></div>";
+
+                    content.append(newItem);
                 });
             },
-            error: function (err) {
-                console.error('Error fetching the feed:', err);  // Error logging
+            error: function () {
+                console.error("Error fetching feed data.");
             }
         });
     });
 }
 
-// Hide other categories when one is clicked
-document.querySelectorAll('.btn-category').forEach(button => {
-    button.addEventListener('click', function () {
-        document.querySelectorAll('.btn-category').forEach(btn => {
-            if (btn !== this) {
-                btn.style.display = 'none'; // Hide other buttons
-            }
-        });
-        loadFeeds(this.getAttribute('data-category'));
-    });
+// Event handler for category buttons
+$(document).on('click', '.btn-category', function () {
+    let category = $(this).data('category');
+    loadFeeds(category);
 });
