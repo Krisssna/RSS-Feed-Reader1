@@ -1,6 +1,4 @@
 let API = "https://api.rss2json.com/v1/api.json?rss_url=";
-let maxNewsItems = 500;  // Set the maximum number of news items to fetch
-let itemsPerLoad = 20;   // Number of items to load per batch
 
 // Define a mapping of RSS feed URLs for each category
 const feedURLs = {
@@ -39,56 +37,41 @@ const feedURLs = {
 
 // Determine the category from the URL hash
 let category = window.location.hash.substring(1) || 'construction-news'; // Default to 'construction-news'
+
 let userFeedURLs = feedURLs[category] || [];
-// let newsItemsLoaded = 0;  // Track how many items have been loaded
+userFeedURLs.forEach(userUrl => {
+    $.ajax({
+        type: 'GET',
+        url: API + userUrl,
+        dataType: 'jsonp',
+        success: function (data) {
+            console.log(data);
 
-// Function to fetch and display RSS feed items
-function loadNewsItems(urls, limit) {
-    urls.forEach(userUrl => {
-        $.ajax({
-            type: 'GET',
-            url: API + userUrl,
-            dataType: 'jsonp',
-            success: function (data) {
-                // Sort items by published date in descending order (newest first)
-                data.items.sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
+            // Sort items by published date in descending order (newest first)
+            data.items.sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
 
-                let cardDeck = document.querySelector('.card-deck');
+            // Clear previous content
+            var content = document.getElementById('content');
+            content.innerHTML = '<div class="card-deck"></div>'; // Create a card-deck container
 
-                // Append news items to the DOM
-                data.items.forEach(item => {
-                    if (newsItemsLoaded >= maxNewsItems || newsItemsLoaded >= limit) return;
+            data.items.forEach(item => {
+                var cardDeck = document.querySelector('.card-deck');
 
-                    let newItem = "";
-                    newItem += "<div class=\"card\">";
-                    newItem += "<div class=\"card-body\">";
-                    // Make the title clickable and open in a new tab
-                    newItem += "<h5 class=\"card-title\"><a href=\"" + item.link + "\" target=\"_blank\">" + item.title + "</a></h5>";
+                // Create a new item container
+                var newItem = "";
+                newItem += "<div class=\"card\">";
+                newItem += "<div class=\"card-body\">";
+                newItem += "<h5 class=\"card-title\">" + item.title + "</h5>";
+                
+                // Remove 'from Google Alert -...' if it exists
+                let description = item.description.replace(/from Google Alert -.*?<br>/i, '');
+                
+                newItem += "<h6 class=\"card-subtitle mb-2 text-muted\">Published Date: " + item.pubDate + "</h6>";
+                newItem += "<p class=\"card-text\">" + description + "</p>";
+                newItem += "</div></div>";
 
-                    // Remove 'from Google Alert -...' if it exists
-                    let description = item.description.replace(/from Google Alert -.*?<br>/i, '');
-
-                    newItem += "<h6 class=\"card-subtitle mb-2 text-muted\">Published Date: " + item.pubDate + "</h6>";
-                    newItem += "<p class=\"card-text\">" + description + "</p>";
-                    newItem += "</div></div>";
-
-                    cardDeck.insertAdjacentHTML('beforeend', newItem);
-                    newsItemsLoaded++;
-                });
-            }
-        });
-    });
-}
-
-// Initial load of news items
-loadNewsItems(userFeedURLs, itemsPerLoad);
-
-// Infinite scrolling implementation
-window.addEventListener('scroll', () => {
-    if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 500) {
-        // Load more news items if we haven't reached the maximum limit
-        if (newsItemsLoaded < maxNewsItems) {
-            loadNewsItems(userFeedURLs, newsItemsLoaded + itemsPerLoad);
+                cardDeck.insertAdjacentHTML('beforeend', newItem);
+            });
         }
-    }
+    });
 });
