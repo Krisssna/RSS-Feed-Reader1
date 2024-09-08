@@ -9,9 +9,38 @@ h1.display-2, h1.display-3, h1.display-5 {
 }
 
 /* Feed Item Container */
-.news-item {
-    margin-bottom: 10px; /* Space between items */
-    padding: 10px; /* Padding inside the item */
+#content {
+    margin-top: 20px;
+}
+
+/* Card Styles */
+.card {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+/* Card Image */
+.card-img-top {
+    height: 200px; /* Adjust this as needed */
+    object-fit: cover;
+}
+
+/* Card Body */
+.card-body {
+    padding: 15px;
+}
+
+/* Card Title */
+.card-title a {
+    text-decoration: none;
+    color: #333;
+}
+
+/* Card Text */
+.card-text {
+    font-size: 14px;
+    color: #555;
 }
 
 /* Remove default styles from hr */
@@ -22,54 +51,9 @@ hr {
     margin: 10px 0; /* Margin around the hr element */
 }
 
-/* News Box */
-.news-box {
-    border: 1px solid #ddd;
-    padding: 10px;
-    background: #fff;
-    text-align: left;
-    position: relative;
-}
-
-.news-thumbnail {
-    width: 100%;
-    height: auto;
-    background-color: #f4f4f4; /* Default blank box color */
-    border-bottom: 1px solid #ddd;
-}
-
-.news-box h3 {
-    font-size: 18px; /* Font size for item titles */
-    margin-top: 10px;
-}
-
-.news-date {
-    font-size: 14px; /* Font size for metadata */
-    color: #555; /* Darker color for metadata */
-}
-
-.news-description {
-    font-size: 14px; /* Font size for the content description */
-}
-
 /* Responsive Layout */
-@media (min-width: 576px) {
-    .news-item {
-        flex: 0 0 100%;
-        max-width: 100%;
-    }
-}
-
-@media (min-width: 768px) {
-    .news-item {
-        flex: 0 0 50%;
-        max-width: 50%;
-    }
-}
-
-@media (min-width: 992px) {
-    .news-item {
-        flex: 0 0 33.3333%;
-        max-width: 33.3333%;
+@media (max-width: 768px) {
+    .card-img-top {
+        height: 150px;
     }
 }
