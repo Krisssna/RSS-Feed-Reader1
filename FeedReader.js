@@ -35,36 +35,53 @@ const feedURLs = {
     ]
 };
 
-// Determine the category from the URL hash
-let category = window.location.hash.substring(1) || 'construction-news'; // Default to 'construction-news'
+// Function to load feeds based on the category selected
+function loadFeeds(category) {
+    let content = document.getElementById('content');
+    content.innerHTML = ''; // Clear previous content
 
-let userFeedURLs = feedURLs[category] || [];
-userFeedURLs.forEach(userUrl => {
-    $.ajax({
-        type: 'GET',
-        url: API + userUrl,
-        dataType: 'jsonp',
-        success: function (data) {
-            console.log(data);
+    let userFeedURLs = feedURLs[category] || [];
+    userFeedURLs.forEach(userUrl => {
+        $.ajax({
+            type: 'GET',
+            url: API + userUrl,
+            dataType: 'jsonp',
+            success: function (data) {
+                // Sort items by published date in descending order (newest first)
+                data.items.sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
 
-            // Sort items by published date in descending order (newest first)
-            data.items.sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
+                data.items.forEach(item => {
+                    // Create a new item container
+                    let newItem = document.createElement('div');
+                    newItem.classList.add('news-item', 'col-lg-4', 'col-md-6', 'col-sm-12');
+                    
+                    // Create the thumbnail image or fallback to blank if none exists
+                    let thumbnail = item.thumbnail || 'path/to/placeholder.png';
+                    newItem.innerHTML = `
+                        <div class="news-box">
+                            <a href="${item.link}" target="_blank">
+                                <img src="${thumbnail}" alt="thumbnail" class="news-thumbnail">
+                                <h3>${item.title}</h3>
+                            </a>
+                            <p class="news-date">Published: ${new Date(item.pubDate).toLocaleDateString()}</p>
+                            <p class="news-description">${item.description.split(' ').slice(0, 30).join(' ')}...</p>
+                        </div>
+                    `;
 
-            data.items.forEach(item => {
-                var content = document.getElementById('content');
+                    content.appendChild(newItem);
+                });
+            }
+        });
+    });
+}
 
-                // Create a new item container
-                var newItem = "";
-                newItem += "<div class=\"container\" id=\"item\"><a href=\"" + item.link + "\"><h1>" + item.title + "</h1></a>";
-                
-                // Remove 'from Google Alert -...' if it exists
-                let description = item.description.replace(/from Google Alert -.*?<br>/i, '');
-                
-                newItem += "<h4>Published Date: " + item.pubDate + "</h4>";
-                newItem += description + "<hr></div>";
-
-                content.insertAdjacentHTML('beforeend', newItem);
-            });
-        }
+// Hide other categories when one is clicked
+document.querySelectorAll('.btn-category').forEach(button => {
+    button.addEventListener('click', function () {
+        document.querySelectorAll('.btn-category').forEach(btn => {
+            if (btn !== this) {
+                btn.style.display = 'none'; // Hide other buttons
+            }
+        });
     });
 });
