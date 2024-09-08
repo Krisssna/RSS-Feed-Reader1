@@ -1,5 +1,6 @@
-const API = "https://api.rss2json.com/v1/api.json?rss_url=";
+let API = "https://api.rss2json.com/v1/api.json?rss_url=";
 
+// Define a mapping of RSS feed URLs for each category
 const feedURLs = {
     'construction-news': [
         'https://www.google.com/alerts/feeds/06313983183609550648/863422411556577025',
@@ -34,46 +35,38 @@ const feedURLs = {
     ]
 };
 
-function loadFeeds(category) {
-    let userFeedURLs = feedURLs[category] || [];
-    $('#news-container').empty(); // Clear previous content
+// Determine the category from the URL hash
+let category = window.location.hash.substring(1) || 'construction-news'; // Default to 'construction-news'
 
-    userFeedURLs.forEach(userUrl => {
-        $.ajax({
-            type: 'GET',
-            url: API + userUrl,
-            dataType: 'json',
-            success: function (data) {
-                console.log(data);
+let userFeedURLs = feedURLs[category] || [];
+userFeedURLs.forEach(userUrl => {
+    $.ajax({
+        type: 'GET',
+        url: API + userUrl,
+        dataType: 'jsonp',
+        success: function (data) {
+            console.log(data);
 
-                // Sort items by published date in descending order (newest first)
-                data.items.sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
+            // Sort items by published date in descending order (newest first)
+            data.items.sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
 
-                data.items.forEach(item => {
-                    var newItem = "<div class=\"col-md-4 mb-3\">";
-                    newItem += "<div class=\"card\">";
-                    newItem += "<div class=\"card-img-top\">No Image</div>"; // Blank placeholder
-                    newItem += "<div class=\"card-body\">";
-                    newItem += "<h5 class=\"card-title\"><a href=\"" + item.link + "\" target=\"_blank\">" + item.title + "</a></h5>";
+            data.items.forEach(item => {
+                var content = document.getElementById('content');
 
-                    // Limit description to 5 lines
-                    let description = item.description.replace(/<br\s*\/?>/gi, ' ').split(' ').slice(0, 50).join(' ') + '...';
+                // Create a new item container
+                var newItem = "";
+                newItem += "<div class=\"card\"><div class=\"card-body\">";
+                newItem += "<h5 class=\"card-title\">" + item.title + "</h5>";
+                
+                // Remove 'from Google Alert -...' if it exists
+                let description = item.description.replace(/from Google Alert -.*?<br>/i, '');
+                
+                newItem += "<h6 class=\"card-subtitle mb-2 text-muted\">Published Date: " + item.pubDate + "</h6>";
+                newItem += "<p class=\"card-text\">" + description + "</p>";
+                newItem += "</div></div>";
 
-                    newItem += "<p class=\"card-text\">" + description + "</p>";
-                    newItem += "</div></div></div>";
-
-                    $('#news-container').append(newItem);
-                });
-            },
-            error: function () {
-                console.error("Error fetching feed data.");
-            }
-        });
+                content.insertAdjacentHTML('beforeend', newItem);
+            });
+        }
     });
-}
-
-$(document).on('click', '.btn-category', function () {
-    let category = $(this).data('category');
-    $('#news-container').empty(); // Clear previous content
-    loadFeeds(category);
 });
