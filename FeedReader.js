@@ -40,7 +40,7 @@ const feedURLs = {
 // Determine the category from the URL hash
 let category = window.location.hash.substring(1) || 'construction-news'; // Default to 'construction-news'
 let userFeedURLs = feedURLs[category] || [];
-let newsItemsLoaded = 0;  // Track how many items have been loaded
+// let newsItemsLoaded = 0;  // Track how many items have been loaded
 
 // Function to fetch and display RSS feed items
 function loadNewsItems(urls, limit) {
