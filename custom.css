@@ -13,6 +13,8 @@ h1.display-2, h1.display-3, h1.display-5 {
     border: 1px solid #ddd;
     margin-bottom: 10px; /* Space between items */
     padding: 10px; /* Padding inside the item */
+    background-color: #fff; /* Background color of the news box */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Light shadow for card effect */
 }
 
 /* Remove default styles from hr */
@@ -26,20 +28,16 @@ hr {
 /* Headings Inside Feed Items */
 .card-title {
     font-size: 18px; /* Font size for item titles */
+    margin-bottom: 5px;
 }
 
 /* Published Date and Description */
-.card-text {
-    font-size: 14px; /* Font size for the content description */
+.card-subtitle {
+    font-size: 14px; /* Font size for published date */
+    color: #555; /* Darker color for metadata */
+    margin-bottom: 10px;
 }
 
-/* Blank Thumbnail Placeholder */
-.card-img-top {
-    background-color: #e0e0e0; /* Light gray background for blank thumbnail */
-    height: 150px; /* Adjust as needed */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #999;
-    font-size: 14px;
+.card-text {
+    font-size: 14px; /* Font size for the content description */
 }
