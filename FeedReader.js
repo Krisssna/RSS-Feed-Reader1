@@ -36,7 +36,7 @@ const feedURLs = {
 
 function loadFeeds(category) {
     let userFeedURLs = feedURLs[category] || [];
-    $('#content').empty(); // Clear previous content
+    $('#news-container').empty(); // Clear previous content
 
     userFeedURLs.forEach(userUrl => {
         $.ajax({
@@ -50,11 +50,9 @@ function loadFeeds(category) {
                 data.items.sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
 
                 data.items.forEach(item => {
-                    var content = $('#content');
-
-                    // Create a new item container
-                    var newItem = "<div class=\"col-md-4 mb-3\"><div class=\"card\">";
-                    newItem += "<div class=\"card-img-top placeholder\"></div>";
+                    var newItem = "<div class=\"col-md-4 mb-3\">";
+                    newItem += "<div class=\"card\">";
+                    newItem += "<div class=\"card-img-top\">No Image</div>"; // Blank placeholder
                     newItem += "<div class=\"card-body\">";
                     newItem += "<h5 class=\"card-title\"><a href=\"" + item.link + "\" target=\"_blank\">" + item.title + "</a></h5>";
 
@@ -64,7 +62,7 @@ function loadFeeds(category) {
                     newItem += "<p class=\"card-text\">" + description + "</p>";
                     newItem += "</div></div></div>";
 
-                    content.append(newItem);
+                    $('#news-container').append(newItem);
                 });
             },
             error: function () {
@@ -76,6 +74,6 @@ function loadFeeds(category) {
 
 $(document).on('click', '.btn-category', function () {
     let category = $(this).data('category');
-    $('#content').empty(); // Clear previous content
+    $('#news-container').empty(); // Clear previous content
     loadFeeds(category);
 });
