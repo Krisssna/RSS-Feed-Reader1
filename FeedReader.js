@@ -1,6 +1,5 @@
 let API = "https://api.rss2json.com/v1/api.json?rss_url=";
 
-// Define a mapping of RSS feed URLs for each category
 const feedURLs = {
     'construction-news': [
         'https://www.google.com/alerts/feeds/06313983183609550648/863422411556577025',
@@ -40,23 +39,34 @@ function loadFeeds(category) {
     let content = document.getElementById('content');
     content.innerHTML = ''; // Clear previous content
 
-    let userFeedURLs = feedURLs[category] || [];
+    // Check if valid category
+    if (!feedURLs[category]) {
+        console.error('No feeds found for this category');
+        return;
+    }
+
+    let userFeedURLs = feedURLs[category];
+
     userFeedURLs.forEach(userUrl => {
+        console.log('Fetching from URL:', userUrl);  // Debugging info
+        
         $.ajax({
             type: 'GET',
             url: API + userUrl,
             dataType: 'jsonp',
             success: function (data) {
-                // Sort items by published date in descending order (newest first)
-                data.items.sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
+                console.log('Data received:', data);  // Debugging info
+                
+                if (!data.items || data.items.length === 0) {
+                    console.warn('No news items found in feed:', userUrl);
+                    return;
+                }
 
                 data.items.forEach(item => {
-                    // Create a new item container
                     let newItem = document.createElement('div');
                     newItem.classList.add('news-item', 'col-lg-4', 'col-md-6', 'col-sm-12');
                     
-                    // Create the thumbnail image or fallback to blank if none exists
-                    let thumbnail = item.thumbnail || 'path/to/placeholder.png';
+                    let thumbnail = item.thumbnail || 'https://via.placeholder.com/150';  // Default blank image
                     newItem.innerHTML = `
                         <div class="news-box">
                             <a href="${item.link}" target="_blank">
@@ -70,6 +80,9 @@ function loadFeeds(category) {
 
                     content.appendChild(newItem);
                 });
+            },
+            error: function (err) {
+                console.error('Error fetching the feed:', err);  // Error logging
             }
         });
     });
@@ -83,5 +96,6 @@ document.querySelectorAll('.btn-category').forEach(button => {
                 btn.style.display = 'none'; // Hide other buttons
             }
         });
+        loadFeeds(this.getAttribute('data-category'));
     });
 });
