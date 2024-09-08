@@ -8,13 +8,52 @@ h1.display-2, h1.display-3, h1.display-5 {
     font-size: 24px; /* Adjust this size as needed */
 }
 
-/* Feed Item Container */
+/* Card Styles */
 .card {
     border: 1px solid #ddd;
-    margin-bottom: 10px; /* Space between items */
-    padding: 10px; /* Padding inside the item */
-    background-color: #fff; /* Background color of the news box */
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Light shadow for card effect */
+    margin-bottom: 10px; /* Space between cards */
+    padding: 10px; /* Padding inside the card */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.card-body {
+    padding: 10px;
+}
+
+.card-title {
+    font-size: 18px; /* Font size for card titles */
+}
+
+.card-subtitle {
+    font-size: 14px; /* Font size for card subtitles */
+    color: #555; /* Darker color for metadata */
+}
+
+.card-text {
+    font-size: 14px; /* Font size for card text */
+}
+
+/* Responsive Layout */
+.card-deck {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.card-deck .card {
+    flex: 1 1 calc(33.333% - 15px); /* 3 cards per row with a gap */
+}
+
+@media (max-width: 768px) {
+    .card-deck .card {
+        flex: 1 1 calc(50% - 15px); /* 2 cards per row for smaller screens */
+    }
+}
+
+@media (max-width: 576px) {
+    .card-deck .card {
+        flex: 1 1 100%; /* 1 card per row for very small screens */
+    }
 }
 
 /* Remove default styles from hr */
@@ -25,19 +64,7 @@ hr {
     margin: 10px 0; /* Margin around the hr element */
 }
 
-/* Headings Inside Feed Items */
-.card-title {
-    font-size: 18px; /* Font size for item titles */
-    margin-bottom: 5px;
-}
-
-/* Published Date and Description */
-.card-subtitle {
-    font-size: 14px; /* Font size for published date */
-    color: #555; /* Darker color for metadata */
-    margin-bottom: 10px;
-}
-
-.card-text {
-    font-size: 14px; /* Font size for the content description */
+/* Container Styles */
+.container {
+    padding: 20px;
 }
