@@ -85,18 +85,12 @@ function getDomainFromUrl(url) {
     }
 }
 
-// Function to format date in a readable format
-function formatDate(dateString) {
-    let date = new Date(dateString);
+// Function to format date in user's local time zone
+function formatDateToLocal(dateString) {
+    const date = new Date(dateString);
     return date.toLocaleString('en-US', {
-        weekday: 'long',
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-        hour: 'numeric',
-        minute: 'numeric',
-        second: 'numeric',
-        timeZoneName: 'short'
+        dateStyle: 'medium',
+        timeStyle: 'short'
     });
 }
 
