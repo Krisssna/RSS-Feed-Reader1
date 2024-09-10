@@ -112,7 +112,28 @@ function handleFeedData() {
         description = description.replace(/from Google Alert -.*?<br>/i, '');
 
         // Display publisher's name if available
-        let publisher = item.source || 'Unknown Publisher'; // Adjust depending on API response
+        let publisher = publisherNames[feedUrl] || 'Unknown'; 
+
+        // Define publisher names based on feed URLs
+    const publisherNames = {
+        'https://onlinekhabar.com/feed': 'Onlinekhabar',
+        'https://www.nepalpress.com/feed/': 'Nepalpress',
+        'https://arthasarokar.com/feed': 'Arthasarokar',
+        'https://arthadabali.com/feed': 'Arthadabali',
+        'https://www.arthapath.com/feed': Arthapath',
+        'https://bajarkochirfar.com/feed': 'Bajarkochirfar',
+        'https://bizmandu.com/feed': 'Bizmandu',
+        'https://www.corporatenepal.com/rss': Corporatenepal',
+        'https://www.nepsebajar.com/feed': Nepsebajar',
+        'https://annapurnapost.com/rss': Annapurnapost',
+        'https://www.bbc.com/nepali/index.xml': 'BBC',
+        'https://www.ratopati.com/feed': 'Ratopati',
+        'https://www.sanghunews.com/feed': 'Sanghunews',
+        'https://techpana.com/rss': 'Techpana',
+        'https://www.ukeraa.com/feed': 'Ukera',
+        'https://thahakhabar.com/rss': 'Thahakhabar',
+        'https://deshsanchar.com/feed': 'Deshsanchar'
+    };
 
         newItem += "<h6 class=\"card-subtitle mb-2 text-muted\">Published Date: " + (item.pubDate || item.date_published) + "</h6>";
         newItem += "<h6 class=\"card-subtitle mb-2 text-muted\">Publisher: " + publisher + "</h6>";
