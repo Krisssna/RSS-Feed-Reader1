@@ -1,22 +1,6 @@
-// Define multiple API keys for rss2json
-let API_KEYS = [
-    "API_KEY_1",
-    "API_KEY_2",
-    "API_KEY_3"
-    // Add more API keys if necessary
-];
-
-// Function to get the current rss2json API key and rotate it
-let apiKeyIndex = 0;
-function getRSS2JSONApiKey() {
-    const apiKey = API_KEYS[apiKeyIndex % API_KEYS.length];
-    apiKeyIndex++;  // Move to the next key for the next request
-    return apiKey;
-}
-
-// Base API URLs
-let RSS2JSON_API = "https://api.rss2json.com/v1/api.json?rss_url=";
-let FEED2JSON_API = "https://www.toptal.com/developers/feed2json/convert?url=";
+// Define two API URLs for rss2json and feed2json
+let rss2jsonAPI = "https://api.rss2json.com/v1/api.json?rss_url=";
+let feed2jsonAPI = "https://www.toptal.com/developers/feed2json/convert?url=";
 
 // Define a mapping of RSS feed URLs for each category
 const feedURLs = {
@@ -62,65 +46,65 @@ if (userFeedURLs.length === 0) {
     alert('No feeds for this category');
 }
 
-// Function to fetch news using rss2json API
-userFeedURLs.forEach(feedUrl => {
-//function fetchNewsFromRSS2JSON(userUrl) {
-    const apiKey = getRSS2JSONApiKey(); // Get the next API key from the list
-    const apiUrl = `${RSS2JSON_API}${feedUrl}&api_key=${apiKey}`;
+// Variables to manage API fallback
+let rss2jsonLimitReached = false;
+let currentAPI = rss2jsonAPI;
 
-    return $.ajax({
+// Function to fetch news from the current API
+function fetchNews(feedUrl) {
+    let apiUrl = currentAPI + encodeURIComponent(feedUrl);
+    
+    $.ajax({
         type: 'GET',
         url: apiUrl,
-        dataType: 'jsonp',
+        dataType: 'jsonp', // jsonp for rss2json, json for feed2json
         success: function (data) {
-            displayFeedData(data);
+            handleFeedData(data);
         },
         error: function () {
-            console.error('Error fetching the feed from RSS2JSON.');
+            console.log("Error fetching from " + currentAPI);
+        },
+        statusCode: {
+            429: function() { // 429 indicates rate limit exceeded for rss2json
+                if (!rss2jsonLimitReached) {
+                    console.log("rss2json API limit reached. Switching to feed2json.");
+                    rss2jsonLimitReached = true;
+                    currentAPI = feed2jsonAPI; // Switch to feed2json
+                    // Retry fetching using feed2json for all URLs
+                    userFeedURLs.forEach(feedUrl => fetchNews(feedUrl));
+                }
+            }
         }
     });
 }
 
-// Function to fetch news using feed2json API from Toptal
-userFeedURLs.forEach(feedUrl => {
-//function fetchNewsFromFeed2JSON(userUrl) {
-    const apiUrl = `${FEED2JSON_API}${encodeURIComponent(feedUrl)}`;
-
-    return $.ajax({
-        type: 'GET',
-        url: apiUrl,
-        dataType: 'json',
-        success: function (data) {
-            displayFeedData(data);
-        },
-        error: function () {
-            console.error('Error fetching the feed from Feed2JSON.');
-        }
-    });
-}
-
-// Function to display feed data on the page
-function displayFeedData(data) {
+// Function to handle and display the feed data
+function handleFeedData(data) {
     // Sort items by published date in descending order (newest first)
-    data.items.sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
+    data.items.sort((a, b) => new Date(b.pubDate || b.date_published) - new Date(a.pubDate || a.date_published));
 
     // Clear previous content
     var content = document.getElementById('content');
-    content.innerHTML = '<div class="card-deck"></div>'; // Create a card-deck container
+    if (!content.querySelector('.card-deck')) {
+        content.innerHTML = '<div class="card-deck"></div>'; // Create a card-deck container only once
+    }
+
+    var cardDeck = document.querySelector('.card-deck');
 
     data.items.forEach(item => {
-        var cardDeck = document.querySelector('.card-deck');
-
         // Create a new item container
         var newItem = "";
         newItem += "<div class=\"card\">";
         newItem += "<div class=\"card-body\">";
         newItem += "<h5 class=\"card-title\"><a href=\"" + item.link + "\" target=\"_blank\">" + item.title + "</a></h5>";
 
-        // Remove 'from Google Alert -...' if it exists
-        let description = item.description.replace(/from Google Alert -.*?<br>/i, '');
+        // Handle differences in description format
+        let description = item.description || item.summary || 'No description available';
 
-        newItem += "<h6 class=\"card-subtitle mb-2 text-muted\">Published Date: " + item.pubDate + "</h6>";
+        // Remove 'from Google Alert -...' if it exists
+        description = description.replace(/from Google Alert -.*?<br>/i, '');
+
+        newItem += "<h6 class=\"card-subtitle mb-2 text-muted\">Published Date: " + (item.pubDate || item.date_published) + "</h6>";
         newItem += "<p class=\"card-text\">" + description + "</p>";
         newItem += "</div></div>";
 
@@ -128,22 +112,12 @@ function displayFeedData(data) {
     });
 }
 
-// Function to handle fetching from either API
-function fetchNews(feedUrl) {
-    // Try fetching from rss2json first, and if it fails, fall back to feed2json
-    fetchNewsFromRSS2JSON(feedUrl).fail(function() {
-        // If rss2json fails, fallback to Toptal's feed2json API
-        console.log("Falling back to feed2json API...");
-        fetchNewsFromFeed2JSON(feedUrl);
-    });
-}
-
-// Load all feeds for the category
-userFeedURLs.forEach(feedUrl => {
-    fetchNews(feedUrl);
+// Iterate over each feed URL and fetch using the first API (rss2json) until the limit is hit
+userFeedURLs.forEach(userUrl => {
+    fetchNews(userUrl);
 });
 
-// Add infinite scrolling
+// Add infinite scrolling (optional)
 $(window).scroll(function () {
     if ($(window).scrollTop() + $(window).height() == $(document).height()) {
         userFeedURLs.forEach(feedUrl => {
