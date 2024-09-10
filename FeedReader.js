@@ -63,7 +63,7 @@ if (userFeedURLs.length === 0) {
 }
 
 // Function to fetch news using rss2json API
-userFeedURLs.forEach(userUrl => {
+userFeedURLs.forEach(feedUrl => {
 //function fetchNewsFromRSS2JSON(userUrl) {
     const apiKey = getRSS2JSONApiKey(); // Get the next API key from the list
     const apiUrl = `${RSS2JSON_API}${feedUrl}&api_key=${apiKey}`;
@@ -82,7 +82,7 @@ userFeedURLs.forEach(userUrl => {
 }
 
 // Function to fetch news using feed2json API from Toptal
-userFeedURLs.forEach(userUrl => {
+userFeedURLs.forEach(feedUrl => {
 //function fetchNewsFromFeed2JSON(userUrl) {
     const apiUrl = `${FEED2JSON_API}${encodeURIComponent(feedUrl)}`;
 
