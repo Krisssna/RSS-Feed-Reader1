@@ -37,6 +37,15 @@ const feedURLs = {
     ]
 };
 
+// Determine the category from the URL hash
+let category = window.location.hash.substring(1) || 'construction-news'; // Default to 'construction-news'
+let userFeedURLs = feedURLs[category] || [];
+
+// Error handling if no feeds exist for the category
+if (userFeedURLs.length === 0) {
+    alert('No feeds for this category');
+}
+
 // Define publisher names based on feed URLs
 const publisherNames = {
     'https://onlinekhabar.com/feed': 'Onlinekhabar',
@@ -58,29 +67,27 @@ const publisherNames = {
     'https://deshsanchar.com/feed': 'Deshsanchar'
 };
 
-// Determine the category from the URL hash
-let category = window.location.hash.substring(1) || 'construction-news'; // Default to 'construction-news'
-let userFeedURLs = feedURLs[category] || [];
-
-// Error handling if no feeds exist for the category
-if (userFeedURLs.length === 0) {
-    alert('No feeds for this category');
-}
-
 // Variables to manage API fallback
 let rss2jsonLimitReached = false;
 let currentAPI = rss2jsonAPI;
 
+// Array to hold all fetched items
+let allItems = [];
+
 // Function to fetch news from the current API
 function fetchNews(feedUrl) {
     let apiUrl = currentAPI + encodeURIComponent(feedUrl);
-    
+
     $.ajax({
         type: 'GET',
         url: apiUrl,
         dataType: 'jsonp', // jsonp for rss2json, json for feed2json
         success: function (data) {
-            handleFeedData(data, feedUrl);
+            allItems = allItems.concat(data.items); // Add fetched items to the array
+            // Check if all URLs have been processed
+            if (allItems.length >= userFeedURLs.length) {
+                handleFeedData(); // Call handleFeedData after all URLs are processed
+            }
         },
         error: function () {
             console.log("Error fetching from " + currentAPI);
@@ -100,9 +107,9 @@ function fetchNews(feedUrl) {
 }
 
 // Function to handle and display the feed data
-function handleFeedData(data, feedUrl) {
+function handleFeedData() {
     // Sort items by published date in descending order (newest first)
-    data.items.sort((a, b) => new Date(b.pubDate || b.date_published) - new Date(a.pubDate || a.date_published));
+    allItems.sort((a, b) => new Date(b.pubDate || b.date_published) - new Date(a.pubDate || a.date_published));
 
     // Clear previous content
     var content = document.getElementById('content');
@@ -112,7 +119,7 @@ function handleFeedData(data, feedUrl) {
 
     var cardDeck = document.querySelector('.card-deck');
 
-    data.items.forEach(item => {
+    allItems.forEach(item => {
         // Create a new item container
         var newItem = "";
         newItem += "<div class=\"card\">";
@@ -125,8 +132,8 @@ function handleFeedData(data, feedUrl) {
         // Remove 'from Google Alert -...' if it exists
         description = description.replace(/from Google Alert -.*?<br>/i, '');
 
-        // Get publisher name
-        let publisher = publisherNames[feedUrl] || 'Unknown';
+        // Display publisher's name if available
+       let publisher = publisherNames[feedUrl] || 'Unknown';
 
         newItem += "<h6 class=\"card-subtitle mb-2 text-muted\">Published Date: " + (item.pubDate || item.date_published) + "</h6>";
         newItem += "<p class=\"card-text\">" + description + "</p>";
