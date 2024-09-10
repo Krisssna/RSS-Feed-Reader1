@@ -64,7 +64,7 @@ if (userFeedURLs.length === 0) {
 
 // Function to fetch news using rss2json API
 //userFeedURLs.forEach(userUrl => {
-function fetchNewsFromRSS2JSON(userdUrl) {
+function fetchNewsFromRSS2JSON(userUrl) {
     const apiKey = getRSS2JSONApiKey(); // Get the next API key from the list
     const apiUrl = `${RSS2JSON_API}${feedUrl}&api_key=${apiKey}`;
 
