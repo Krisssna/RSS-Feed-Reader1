@@ -37,25 +37,25 @@ const feedURLs = {
     ]
 };
 
-// Define publisher names based on feed URLs
+// Define publisher names based on domain
 const publisherNames = {
-    'https://onlinekhabar.com/feed': 'Onlinekhabar',
-    'https://www.nepalpress.com/feed/': 'Nepalpress',
-    'https://arthasarokar.com/feed': 'Arthasarokar',
-    'https://arthadabali.com/feed': 'Arthadabali',
-    'https://www.arthapath.com/feed': 'Arthapath',
-    'https://bajarkochirfar.com/feed': 'Bajarkochirfar',
-    'https://bizmandu.com/feed': 'Bizmandu',
-    'https://www.corporatenepal.com/rss': 'Corporatenepal',
-    'https://www.nepsebajar.com/feed': 'Nepsebajar',
-    'https://annapurnapost.com/rss': 'Annapurnapost',
-    'https://www.bbc.com/nepali/index.xml': 'BBC',
-    'https://www.ratopati.com/feed': 'Ratopati',
-    'https://www.sanghunews.com/feed': 'Sanghunews',
-    'https://techpana.com/rss': 'Techpana',
-    'https://www.ukeraa.com/feed': 'Ukera',
-    'https://thahakhabar.com/rss': 'Thahakhabar',
-    'https://deshsanchar.com/feed': 'Deshsanchar'
+    'onlinekhabar.com': 'Onlinekhabar',
+    'nepalpress.com': 'Nepalpress',
+    'arthasarokar.com': 'Arthasarokar',
+    'arthadabali.com': 'Arthadabali',
+    'arthapath.com': 'Arthapath',
+    'bajarkochirfar.com': 'Bajarkochirfar',
+    'bizmandu.com': 'Bizmandu',
+    'corporatenepal.com': 'Corporatenepal',
+    'nepsebajar.com': 'Nepsebajar',
+    'annapurnapost.com': 'Annapurnapost',
+    'bbc.com': 'BBC',
+    'ratopati.com': 'Ratopati',
+    'sanghunews.com': 'Sanghunews',
+    'techpana.com': 'Techpana',
+    'ukeraa.com': 'Ukera',
+    'thahakhabar.com': 'Thahakhabar',
+    'deshsanchar.com': 'Deshsanchar'
 };
 
 // Determine the category from the URL hash
@@ -73,7 +73,17 @@ let currentAPI = rss2jsonAPI;
 
 // Array to hold all fetched items
 let allItems = [];
-let processedFeedUrls = 0;
+
+// Function to extract domain from URL
+function getDomainFromUrl(url) {
+    try {
+        const urlObj = new URL(url);
+        return urlObj.hostname.replace('www.', '');
+    } catch (e) {
+        console.error('Invalid URL:', url);
+        return '';
+    }
+}
 
 // Function to fetch news from the current API
 function fetchNews(feedUrl) {
@@ -85,9 +95,8 @@ function fetchNews(feedUrl) {
         dataType: 'jsonp', // jsonp for rss2json, json for feed2json
         success: function (data) {
             allItems = allItems.concat(data.items); // Add fetched items to the array
-            processedFeedUrls++;
             // Check if all URLs have been processed
-            if (processedFeedUrls === userFeedURLs.length) {
+            if (allItems.length >= userFeedURLs.length) {
                 handleFeedData(); // Call handleFeedData after all URLs are processed
             }
         },
@@ -126,16 +135,14 @@ function handleFeedData() {
         var newItem = "";
         newItem += "<div class=\"card\">";
         newItem += "<div class=\"card-body\">";
-        newItem += "<h5 class=\"card-title\"><a href=\"" + item.link + "\" target=\"_blank\">" + item.title + "</a></h5>";
+        newItem += "<h5 class=\"card-title\"><a href=\"" + item.url + "\" target=\"_blank\">" + item.title + "</a></h5>";
 
         // Handle differences in description format
-        let description = item.description || item.summary || 'No description available';
+        let description = item.content_html || item.description || item.summary || 'No description available';
 
-        // Remove 'from Google Alert -...' if it exists
-        description = description.replace(/from Google Alert -.*?<br>/i, '');
-
-        // Display publisher's name if available
-        let publisher = publisherNames[item.feed_url] || 'Unknown'; 
+        // Extract domain and get publisher name
+        let domain = getDomainFromUrl(item.url || item.guid);
+        let publisher = publisherNames[domain] || 'Unknown'; 
 
         newItem += "<h6 class=\"card-subtitle mb-2 text-muted\">Published Date: " + (item.pubDate || item.date_published) + "</h6>";
         newItem += "<h6 class=\"card-subtitle mb-2 text-muted\">Publisher: " + publisher + "</h6>";
