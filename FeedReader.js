@@ -37,6 +37,27 @@ const feedURLs = {
     ]
 };
 
+// Define publisher names based on feed URLs
+const publisherNames = {
+    'https://onlinekhabar.com/feed': 'Onlinekhabar',
+    'https://www.nepalpress.com/feed/': 'Nepalpress',
+    'https://arthasarokar.com/feed': 'Arthasarokar',
+    'https://arthadabali.com/feed': 'Arthadabali',
+    'https://www.arthapath.com/feed': Arthapath',
+    'https://bajarkochirfar.com/feed': 'Bajarkochirfar',
+    'https://bizmandu.com/feed': 'Bizmandu',
+    'https://www.corporatenepal.com/rss': Corporatenepal',
+    'https://www.nepsebajar.com/feed': Nepsebajar',
+    'https://annapurnapost.com/rss': Annapurnapost',
+    'https://www.bbc.com/nepali/index.xml': 'BBC',
+    'https://www.ratopati.com/feed': 'Ratopati',
+    'https://www.sanghunews.com/feed': 'Sanghunews',
+    'https://techpana.com/rss': 'Techpana',
+    'https://www.ukeraa.com/feed': 'Ukera',
+    'https://thahakhabar.com/rss': 'Thahakhabar',
+    'https://deshsanchar.com/feed': 'Deshsanchar'
+};
+
 // Determine the category from the URL hash
 let category = window.location.hash.substring(1) || 'construction-news'; // Default to 'construction-news'
 let userFeedURLs = feedURLs[category] || [];
@@ -50,23 +71,16 @@ if (userFeedURLs.length === 0) {
 let rss2jsonLimitReached = false;
 let currentAPI = rss2jsonAPI;
 
-// Array to hold all fetched items
-let allItems = [];
-
 // Function to fetch news from the current API
 function fetchNews(feedUrl) {
     let apiUrl = currentAPI + encodeURIComponent(feedUrl);
-
+    
     $.ajax({
         type: 'GET',
         url: apiUrl,
         dataType: 'jsonp', // jsonp for rss2json, json for feed2json
         success: function (data) {
-            allItems = allItems.concat(data.items); // Add fetched items to the array
-            // Check if all URLs have been processed
-            if (allItems.length >= userFeedURLs.length) {
-                handleFeedData(); // Call handleFeedData after all URLs are processed
-            }
+            handleFeedData(data, feedUrl);
         },
         error: function () {
             console.log("Error fetching from " + currentAPI);
@@ -86,9 +100,9 @@ function fetchNews(feedUrl) {
 }
 
 // Function to handle and display the feed data
-function handleFeedData() {
+function handleFeedData(data, feedUrl) {
     // Sort items by published date in descending order (newest first)
-    allItems.sort((a, b) => new Date(b.pubDate || b.date_published) - new Date(a.pubDate || a.date_published));
+    data.items.sort((a, b) => new Date(b.pubDate || b.date_published) - new Date(a.pubDate || a.date_published));
 
     // Clear previous content
     var content = document.getElementById('content');
@@ -98,7 +112,7 @@ function handleFeedData() {
 
     var cardDeck = document.querySelector('.card-deck');
 
-    allItems.forEach(item => {
+    data.items.forEach(item => {
         // Create a new item container
         var newItem = "";
         newItem += "<div class=\"card\">";
@@ -111,12 +125,12 @@ function handleFeedData() {
         // Remove 'from Google Alert -...' if it exists
         description = description.replace(/from Google Alert -.*?<br>/i, '');
 
-        // Display publisher's name if available
-        let publisher = item.source || 'Unknown Publisher'; // Adjust depending on API response
+        // Get publisher name
+        let publisher = publisherNames[feedUrl] || 'Unknown';
 
         newItem += "<h6 class=\"card-subtitle mb-2 text-muted\">Published Date: " + (item.pubDate || item.date_published) + "</h6>";
-        newItem += "<h6 class=\"card-subtitle mb-2 text-muted\">Publisher: " + publisher + "</h6>";
         newItem += "<p class=\"card-text\">" + description + "</p>";
+        newItem += "<p class=\"card-text\"><strong>Publisher:</strong> " + publisher + "</p>";
         newItem += "</div></div>";
 
         cardDeck.insertAdjacentHTML('beforeend', newItem);
