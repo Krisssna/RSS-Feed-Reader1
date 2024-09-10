@@ -1,3 +1,6 @@
+// Import the formatDate function from dateUtils.js
+import { formatDate } from './dateUtils.js';
+
 // Define two API URLs for rss2json and feed2json
 let rss2jsonAPI = "https://api.rss2json.com/v1/api.json?rss_url=";
 let feed2jsonAPI = "https://www.toptal.com/developers/feed2json/convert?url=";
@@ -117,27 +120,6 @@ function fetchNews(feedUrl) {
     });
 }
 
-// Function to calculate relative time
-function timeAgo(date) {
-    const now = new Date();
-    const diff = now - date;
-
-    const seconds = Math.floor(diff / 1000);
-    const minutes = Math.floor(seconds / 60);
-    const hours = Math.floor(minutes / 60);
-    const days = Math.floor(hours / 24);
-
-    if (days > 0) {
-        return days === 1 ? '1 day ago' : `${days} days ago`;
-    } else if (hours > 0) {
-        return hours === 1 ? '1 hour ago' : `${hours} hours ago`;
-    } else if (minutes > 0) {
-        return minutes === 1 ? '1 minute ago' : `${minutes} minutes ago`;
-    } else {
-        return 'Just now';
-    }
-}
-
 // Function to handle and display the feed data
 function handleFeedData() {
     // Sort items by published date in descending order (newest first)
@@ -158,18 +140,17 @@ function handleFeedData() {
         newItem += "<div class=\"card-body\">";
         newItem += "<h5 class=\"card-title\"><a href=\"" + item.url + "\" target=\"_blank\">" + item.title + "</a></h5>";
 
-        // Handle differences in description format
+                // Handle differences in description format
         let description = item.content_html || item.description || item.summary || 'No description available';
 
         // Extract domain and get publisher name
         let domain = getDomainFromUrl(item.url || item.guid);
         let publisher = publisherNames[domain] || 'Unknown'; 
 
-        // Calculate relative time
-        let pubDate = new Date(item.pubDate || item.date_published);
-        let relativeTime = timeAgo(pubDate);
+        // Use formatDate from dateUtils.js to format the published date
+        let formattedDate = formatDate(item.pubDate || item.date_published);
 
-        newItem += "<h6 class=\"card-subtitle mb-2 text-muted\">Published Date: " + relativeTime + "</h6>";
+        newItem += "<h6 class=\"card-subtitle mb-2 text-muted\">Published Date: " + formattedDate + "</h6>";
         newItem += "<h6 class=\"card-subtitle mb-2 text-muted\">Publisher: " + publisher + "</h6>";
         newItem += "<p class=\"card-text\">" + description + "</p>";
         newItem += "</div></div>";
