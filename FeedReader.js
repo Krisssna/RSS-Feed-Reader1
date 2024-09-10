@@ -85,6 +85,21 @@ function getDomainFromUrl(url) {
     }
 }
 
+// Function to format date in a readable format
+function formatDate(dateString) {
+    let date = new Date(dateString);
+    return date.toLocaleString('en-US', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: 'numeric',
+        second: 'numeric',
+        timeZoneName: 'short'
+    });
+}
+
 // Function to fetch news from the current API
 function fetchNews(feedUrl) {
     let apiUrl = currentAPI + encodeURIComponent(feedUrl);
@@ -144,7 +159,10 @@ function handleFeedData() {
         let domain = getDomainFromUrl(item.url || item.guid);
         let publisher = publisherNames[domain] || 'Unknown'; 
 
-        newItem += "<h6 class=\"card-subtitle mb-2 text-muted\">Published Date: " + (item.pubDate || item.date_published) + "</h6>";
+        // Format the date
+        let date = formatDate(item.pubDate || item.date_published);
+
+        newItem += "<h6 class=\"card-subtitle mb-2 text-muted\">Published Date: " + date + "</h6>";
         newItem += "<h6 class=\"card-subtitle mb-2 text-muted\">Publisher: " + publisher + "</h6>";
         newItem += "<p class=\"card-text\">" + description + "</p>";
         newItem += "</div></div>";
