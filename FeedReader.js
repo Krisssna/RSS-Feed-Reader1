@@ -117,6 +117,27 @@ function fetchNews(feedUrl) {
     });
 }
 
+// Function to calculate relative time
+function timeAgo(date) {
+    const now = new Date();
+    const diff = now - date;
+
+    const seconds = Math.floor(diff / 1000);
+    const minutes = Math.floor(seconds / 60);
+    const hours = Math.floor(minutes / 60);
+    const days = Math.floor(hours / 24);
+
+    if (days > 0) {
+        return days === 1 ? '1 day ago' : `${days} days ago`;
+    } else if (hours > 0) {
+        return hours === 1 ? '1 hour ago' : `${hours} hours ago`;
+    } else if (minutes > 0) {
+        return minutes === 1 ? '1 minute ago' : `${minutes} minutes ago`;
+    } else {
+        return 'Just now';
+    }
+}
+
 // Function to handle and display the feed data
 function handleFeedData() {
     // Sort items by published date in descending order (newest first)
@@ -144,11 +165,11 @@ function handleFeedData() {
         let domain = getDomainFromUrl(item.url || item.guid);
         let publisher = publisherNames[domain] || 'Unknown'; 
 
-        // Convert date to local time zone
+        // Calculate relative time
         let pubDate = new Date(item.pubDate || item.date_published);
-        let localDate = pubDate.toLocaleString(); // Converts to local time zone
+        let relativeTime = timeAgo(pubDate);
 
-        newItem += "<h6 class=\"card-subtitle mb-2 text-muted\">Published Date: " + localDate + "</h6>";
+        newItem += "<h6 class=\"card-subtitle mb-2 text-muted\">Published Date: " + relativeTime + "</h6>";
         newItem += "<h6 class=\"card-subtitle mb-2 text-muted\">Publisher: " + publisher + "</h6>";
         newItem += "<p class=\"card-text\">" + description + "</p>";
         newItem += "</div></div>";
