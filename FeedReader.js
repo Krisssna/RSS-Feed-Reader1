@@ -92,7 +92,7 @@ function fetchNews(feedUrl) {
     $.ajax({
         type: 'GET',
         url: apiUrl,
-        dataType: currentAPI === rss2jsonAPI ? 'jsonp' : 'json', // jsonp for rss2json, json for feed2json
+        dataType: 'jsonp', // jsonp for rss2json, json for feed2json
         success: function (data) {
             allItems = allItems.concat(data.items); // Add fetched items to the array
             // Check if all URLs have been processed
@@ -135,13 +135,15 @@ function handleFeedData() {
         var newItem = "";
         newItem += "<div class=\"card\">";
         newItem += "<div class=\"card-body\">";
-        newItem += "<h5 class=\"card-title\"><a href=\"" + item.url + "\" target=\"_blank\">" + item.title + "</a></h5>";
+
+        // The following line links directly to the fetched news item
+        newItem += "<h5 class=\"card-title\"><a href=\"" + item.link + "\" target=\"_blank\">" + item.title + "</a></h5>";
 
         // Handle differences in description format
         let description = item.content_html || item.description || item.summary || 'No description available';
 
         // Extract domain and get publisher name
-        let domain = getDomainFromUrl(item.url || item.guid);
+        let domain = getDomainFromUrl(item.link || item.guid);
         let publisher = publisherNames[domain] || 'Unknown'; 
 
         newItem += "<h6 class=\"card-subtitle mb-2 text-muted\">Published Date: " + (item.pubDate || item.date_published) + "</h6>";
