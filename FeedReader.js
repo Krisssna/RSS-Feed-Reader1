@@ -5,15 +5,16 @@ let feed2jsonAPI = "https://www.toptal.com/developers/feed2json/convert?url=";
 // Define a mapping of RSS feed URLs for each category
 const feedURLs = {
     'construction-news': [
-        //'https://www.google.com/alerts/feeds/06313983183609550648/863422411556577025',
-       // 'https://www.google.com/alerts/feeds/06313983183609550648/16219506770346016876',
-        //'https://www.google.com/alerts/feeds/06313983183609550648/16120492411931428893',
-        //'https://www.google.com/alerts/feeds/06313983183609550648/9874521726757945814',
-       // 'https://www.google.com/alerts/feeds/06313983183609550648/13722836873792678019',
-       // 'https://www.google.com/alerts/feeds/06313983183609550648/17566939723916288150',
-       // 'https://www.google.com/alerts/feeds/06313983183609550648/7361213428763324582',
-       // 'https://www.google.com/alerts/feeds/06313983183609550648/8196542214144987233',
-        'https://www.google.com/alerts/feeds/06313983183609550648/1535968541780741240'
+        'https://www.google.com/alerts/feeds/06313983183609550648/863422411556577025',
+        'https://www.google.com/alerts/feeds/06313983183609550648/16219506770346016876',
+        'https://www.google.com/alerts/feeds/06313983183609550648/16120492411931428893',
+        'https://www.google.com/alerts/feeds/06313983183609550648/9874521726757945814',
+        'https://www.google.com/alerts/feeds/06313983183609550648/13722836873792678019',
+        'https://www.google.com/alerts/feeds/06313983183609550648/17566939723916288150',
+        'https://www.google.com/alerts/feeds/06313983183609550648/7361213428763324582',
+        'https://www.google.com/alerts/feeds/06313983183609550648/8196542214144987233',
+        'https://www.google.com/alerts/feeds/06313983183609550648/1535968541780741240',
+        'https://www.google.com/alerts/feeds/06313983183609550648/16371745445661687328'
     ],
     'share-market': [
         'https://arthasarokar.com/feed',
