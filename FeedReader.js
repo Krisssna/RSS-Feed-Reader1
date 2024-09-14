@@ -92,7 +92,7 @@ function fetchNews(feedUrl) {
     $.ajax({
         type: 'GET',
         url: apiUrl,
-        dataType: 'jsonp', // jsonp for rss2json, json for feed2json
+        dataType: currentAPI === rss2jsonAPI ? 'jsonp' : 'json', // jsonp for rss2json, json for feed2json
         success: function (data) {
             allItems = allItems.concat(data.items); // Add fetched items to the array
             // Check if all URLs have been processed
