@@ -1,6 +1,3 @@
-// Import the formatDate function from dateUtils.js
-import { formatDate } from './dateUtils.js';
-
 // Define two API URLs for rss2json and feed2json
 let rss2jsonAPI = "https://api.rss2json.com/v1/api.json?rss_url=";
 let feed2jsonAPI = "https://www.toptal.com/developers/feed2json/convert?url=";
@@ -140,17 +137,14 @@ function handleFeedData() {
         newItem += "<div class=\"card-body\">";
         newItem += "<h5 class=\"card-title\"><a href=\"" + item.url + "\" target=\"_blank\">" + item.title + "</a></h5>";
 
-                // Handle differences in description format
+        // Handle differences in description format
         let description = item.content_html || item.description || item.summary || 'No description available';
 
         // Extract domain and get publisher name
         let domain = getDomainFromUrl(item.url || item.guid);
         let publisher = publisherNames[domain] || 'Unknown'; 
 
-        // Use formatDate from dateUtils.js to format the published date
-        let formattedDate = formatDate(item.pubDate || item.date_published);
-
-        newItem += "<h6 class=\"card-subtitle mb-2 text-muted\">Published Date: " + formattedDate + "</h6>";
+        newItem += "<h6 class=\"card-subtitle mb-2 text-muted\">Published Date: " + (item.pubDate || item.date_published) + "</h6>";
         newItem += "<h6 class=\"card-subtitle mb-2 text-muted\">Publisher: " + publisher + "</h6>";
         newItem += "<p class=\"card-text\">" + description + "</p>";
         newItem += "</div></div>";
